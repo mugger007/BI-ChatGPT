@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GBI ChatGPT 🤡</title>
+</head>
+<body>
+    <h1>GBI ChatGPT 🤡</h1>
+    <form action="/chat" method="POST">
+        <input type="text" name="user_input" placeholder="Enter your message">
+        <button type="submit">Send</button>
+    </form>
+    {% if user_input %}
+    <p><strong>You:</strong> {{ user_input }}</p>
+    <p><strong>Default Model:</strong> {{ default_response }}</p>
+    <p><strong>Fine-Tuned Model:</strong> {{ fine_tuned_response }}</p>
+    {% endif %}
+</body>
+</html>

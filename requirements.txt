@@ -1,6 +1,4 @@
 flask
 transformers
 torch
-einops
-accelerate
-flask-ngrok
+pyngrok

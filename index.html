@@ -2,17 +2,80 @@
 <html>
 <head>
     <title>GBI ChatGPT 🤡</title>
+    <style>
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+        }
+
+        .response {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>GBI ChatGPT 🤡</h1>
-    <form action="/chat" method="POST">
-        <input type="text" name="user_input" placeholder="Enter your message">
-        <button type="submit">Send</button>
-    </form>
-    {% if user_input %}
-    <p><strong>You:</strong> {{ user_input }}</p>
-    <p><strong>Default Model:</strong> {{ default_response }}</p>
-    <p><strong>Fine-Tuned Model:</strong> {{ fine_tuned_response }}</p>
-    {% endif %}
+    <div class="container">
+        <h1>GBI ChatGPT 🤡</h1>
+        <form id="chatForm">
+            <label for="message">Message:</label>
+            <input type="text" id="message" name="message" placeholder="Enter your message" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="response">
+            <p id="defaultResponse"></p>
+            <p id="fineTunedResponse"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var message = document.getElementById('message').value;
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'message=' + encodeURIComponent(message)
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                document.getElementById('defaultResponse').textContent = 'Default Model Response: ' + data.default;
+                document.getElementById('fineTunedResponse').textContent = 'Fine-Tuned Model Response: ' + data.fine_tuned;
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>

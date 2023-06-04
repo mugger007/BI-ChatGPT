@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from pyngrok import ngrok
+import threading
 
 app = Flask(__name__)
 
@@ -33,7 +34,15 @@ def generate_response(model, message):
     
     return response
 
-if __name__ == '__main__':
+def run_flask_app():
     app.run()
-    public_url = ngrok.connect(5000).public_url
+
+def run_ngrok():
+    public_url = ngrok.connect(5000)
     print("Public URL:", public_url)
+
+flask_thread = threading.Thread(target=run_flask_app)
+ngrok_thread = threading.Thread(target=run_ngrok)
+
+flask_thread.start()
+ngrok_thread.start()

@@ -3,16 +3,18 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from pyngrok import ngrok
 import threading
 import torch
+# import tensorflow as tf
 
 app = Flask(__name__)
 
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+default_tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+fine_tuned_tokenizer = GPT2Tokenizer.from_pretrained('/content/fine-tuned-model')
 default_model = GPT2LMHeadModel.from_pretrained('gpt2')
-fine_tuned_model = GPT2LMHeadModel.from_pretrained('gpt2')
+fine_tuned_model = GPT2LMHeadModel.from_pretrained('/content/fine-tuned-model')
 
 # Set the pad token ID to the end-of-sequence token ID
-default_model.config.pad_token_id = tokenizer.eos_token_id
-fine_tuned_model.config.pad_token_id = tokenizer.eos_token_id
+default_model.config.pad_token_id = default_tokenizer.eos_token_id
+fine_tuned_model.config.pad_token_id = fine_tuned_tokenizer.eos_token_id
 
 @app.route('/')
 def home():
@@ -22,8 +24,8 @@ def home():
 def chat():
     message = request.form['message']
     
-    default_response = generate_response(default_model, message)
-    fine_tuned_response = generate_response(fine_tuned_model, message)
+    default_response = generate_response(default_model, message, default_tokenizer)
+    fine_tuned_response = generate_response(fine_tuned_model, message, fine_tuned_tokenizer)
     
     response = {
         'default': default_response,
@@ -32,7 +34,7 @@ def chat():
     
     return response
 
-def generate_response(model, message):
+def generate_response(model, message, tokenizer):
     # Prepare input
     input_ids = tokenizer.encode(message, return_tensors='pt')
 

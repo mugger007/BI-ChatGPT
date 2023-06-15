@@ -3,14 +3,14 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from pyngrok import ngrok
 import threading
 import torch
-# import tensorflow as tf
+import tensorflow as tf
 
 app = Flask(__name__)
 
 default_tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 fine_tuned_tokenizer = GPT2Tokenizer.from_pretrained('/content/fine-tuned-model')
 default_model = GPT2LMHeadModel.from_pretrained('gpt2')
-fine_tuned_model = GPT2LMHeadModel.from_pretrained('/content/fine-tuned-model')
+fine_tuned_model = GPT2LMHeadModel.from_pretrained('/content/fine-tuned-model', from_tf=True)
 
 # Set the pad token ID to the end-of-sequence token ID
 default_model.config.pad_token_id = default_tokenizer.eos_token_id
